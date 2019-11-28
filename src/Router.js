@@ -12,6 +12,7 @@ class App extends React.Component {
     uriPrefix: PropTypes.string,
     onDeepLink: PropTypes.func,
     navigationStore: PropTypes.instanceOf(NavigationStore).isRequired,
+    enableURLHandling: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -19,6 +20,7 @@ class App extends React.Component {
     backAndroidHandler: null,
     uriPrefix: null,
     onDeepLink: null,
+    enableURLHandling: false,
   };
 
   componentDidMount() {
@@ -82,7 +84,7 @@ class App extends React.Component {
 
   render() {
     const {
-      dispatch, state, navigator: AppNavigator, navigationStore,
+      dispatch, state, navigator: AppNavigator, navigationStore, enableURLHandling
     } = this.props;
     if (dispatch && state) {
       navigationStore.externalDispatch = dispatch;
@@ -91,6 +93,7 @@ class App extends React.Component {
         <AppNavigator
           dispatch={navigationStore.dispatch}
           state={navigationStore.state}
+          enableURLHandling={enableURLHandling}
           ref={(navigatorRef) => {
             navigationStore.setTopLevelNavigator(navigatorRef);
           }}
@@ -100,6 +103,7 @@ class App extends React.Component {
     return (
       <AppNavigator
         onNavigationStateChange={navigationStore.onNavigationStateChange}
+        enableURLHandling={enableURLHandling}
         ref={(navigatorRef) => {
           navigationStore.setTopLevelNavigator(navigatorRef);
         }}
@@ -109,7 +113,7 @@ class App extends React.Component {
 }
 
 const Router = ({
-  createReducer, sceneStyle, onStateChange, scenes, uriPrefix, navigator, getSceneStyle, children, onDeepLink, wrapBy, navigationStore: store, ...props
+  createReducer, sceneStyle, onStateChange, scenes, uriPrefix, navigator, getSceneStyle, children, onDeepLink, wrapBy, navigationStore: store, enableURLHandling, ...props
 }) => {
   const data = { ...props };
   if (getSceneStyle) {
@@ -124,7 +128,7 @@ const Router = ({
   if (onStateChange) {
     navigationStore.onStateChange = onStateChange;
   }
-  return <App {...props} onDeepLink={onDeepLink} navigator={AppNavigator} uriPrefix={uriPrefix} navigationStore={navigationStore} />;
+  return <App {...props} onDeepLink={onDeepLink} navigator={AppNavigator} uriPrefix={uriPrefix} navigationStore={navigationStore} enableURLHandling={enableURLHandling} />;
 };
 Router.propTypes = {
   onStateChange: PropTypes.func,
